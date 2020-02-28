@@ -28,4 +28,10 @@ var routes = Routes{
 		"/load",
 		handle.Load,
 	},
+	Route{
+		"Serve",
+		"GET",
+		"/serve",
+		handle.Serve,
+	},
 }

@@ -1,10 +1,14 @@
 package logger
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Event struct {
@@ -47,23 +51,33 @@ func Logger(inner http.Handler, name string) http.Handler {
 			// r.Response.Body,
 		)
 
-		// e := Event{
-		// 	Time:          start,
-		// 	Method:        r.Method,
-		// 	RequestURI:    r.RequestURI,
-		// 	Name:          name,
-		// 	Execution:     time.Since(start),
-		// 	Pid:           pid,
-		// 	Hostname:      hostname,
-		// 	Host:          r.Host,
-		// 	RemoteAddress: r.RemoteAddr,
-		// 	UserAgent:     r.UserAgent(),
-		// }
+		e := Event{
+			Time:       start,
+			Method:     r.Method,
+			RequestURI: r.RequestURI,
+			Name:       name,
+			Execution:  time.Since(start),
+			Pid:        pid,
+			Hostname:   hostname,
+			Host:       r.Host,
+			// RemoteAddress: r.RemoteAddr,
+			UserAgent: r.UserAgent(),
+		}
 
-		// PersistToMongo(e)
+		PersistToMongo(e)
 	})
 }
 
-// func PersistToMongo(e Event) {
-
-// }
+func PersistToMongo(e Event) {
+	clientOptions := options.Client().ApplyURI("mongodb+srv://justdave:supersecret@cluster0-xsmx6.gcp.mongodb.net/test?retryWrites=true&w=majority")
+	mgo, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	collection := mgo.Database("Logs").Collection("Logs")
+	_, err = collection.InsertOne(context.TODO(), e)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// log.Println("Inserted a Single Document: ", insertResult.InsertedID)
+}

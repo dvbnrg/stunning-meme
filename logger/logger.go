@@ -12,16 +12,16 @@ import (
 )
 
 type Event struct {
-	Time          time.Time
-	Method        string
-	RequestURI    string
-	Name          string
-	Execution     time.Duration
-	Pid           int
-	Hostname      string
-	UserAgent     string
-	Host          string
-	RemoteAddress string
+	Time       time.Time
+	Method     string
+	RequestURI string
+	Name       string
+	Execution  string
+	Pid        int
+	Hostname   string
+	UserAgent  string
+	Host       string
+	// RemoteAddress string
 	// UserAgentr    string
 }
 
@@ -56,7 +56,7 @@ func Logger(inner http.Handler, name string) http.Handler {
 			Method:     r.Method,
 			RequestURI: r.RequestURI,
 			Name:       name,
-			Execution:  time.Since(start),
+			Execution:  (time.Since(start)).String(),
 			Pid:        pid,
 			Hostname:   hostname,
 			Host:       r.Host,

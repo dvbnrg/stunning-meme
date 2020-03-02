@@ -16,6 +16,6 @@ func Serve() (o model.Repos) {
 	if err != nil {
 		log.Println("Data Retreival Error: ", err)
 	}
-	log.Println("Retreived a Single Document")
+	log.Println("Retrieved a Single Document")
 	return
 }
